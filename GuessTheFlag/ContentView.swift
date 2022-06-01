@@ -24,6 +24,7 @@ struct ContentView: View {
     
     // MARK: - GAME SETTINGS
     // Set your health points
+    // Don't forget to change hp in func resetGame
     @State private var hp = 3
     
     // Set your number of questions
@@ -57,7 +58,7 @@ struct ContentView: View {
                 
                 Text("This is a game of \(numberOfQuestions) questions")
                     .foregroundStyle(.ultraThickMaterial)
-                    .font(.title)
+                    .font(.title3)
                 
                 VStack(spacing: 15) {
                     VStack {
@@ -166,6 +167,7 @@ struct ContentView: View {
     func resetGame() {
         questionCounter = 1
         score = 0
+        hp = 3
         countries = ContentView.allCountries
     }
 }
