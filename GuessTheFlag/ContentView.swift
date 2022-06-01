@@ -13,8 +13,8 @@ struct ContentView: View {
     @State private var scoreTitle = ""
     
     @State private var score = 0
-
-    @State private var numberOfQuestions = 1
+    
+    @State private var questionCounter = 1
     
     @State private var showingFinalScore = false
     @State private var finalScoreTitle = ""
@@ -22,6 +22,16 @@ struct ContentView: View {
     @State private var countries = allCountries.shuffled()
     @State private var correctAnswer = Int.random(in: 0...2)
     
+    // MARK: - GAME SETTINGS
+    // Set your health points
+    @State private var hp = 3
+    
+    // Set your number of questions
+    // Make sure that (allCountries.count() - numberOfQuestions) is = or > than displayed countries (3 here)
+    // Ex: 10 countries in allCountries, numberOfQuestions is 8, and displayed countries per question is 3. 10 - 8 < 3 , So it will crash
+    @State private var numberOfQuestions = 8
+    
+    // Set your countries for the game
     static let allCountries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"]
     
     
@@ -43,6 +53,11 @@ struct ContentView: View {
                     .font(.largeTitle.bold())
                     .foregroundColor(.white)
                 
+                Spacer()
+                
+                Text("This is a game of \(numberOfQuestions) questions")
+                    .foregroundStyle(.ultraThickMaterial)
+                    .font(.title)
                 
                 VStack(spacing: 15) {
                     VStack {
@@ -71,15 +86,31 @@ struct ContentView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 Spacer()
+
+                
+                VStack {
+                    HStack(spacing: 20) {
+                        Spacer()
+                        ForEach(0..<hp, id:\.self) {_ in
+                            Image(systemName: "heart.fill")
+                                .scaleEffect(2)
+                                .foregroundColor(.black)
+                        }
+                        Spacer()
+                    } //: HSTACK
+                } //: VSTACK
+                
                 Spacer()
                 
-                Text("Score: \(score)")
-                    .foregroundColor(.white)
-                    .font(.title.bold())
+                VStack {
+                    Text("Score: \(score)")
+                        .foregroundColor(.white)
+                        .font(.title.bold())
                 
-                Text("Question n°\(numberOfQuestions)")
-                    .foregroundStyle(.secondary)
-                    .font(.headline.weight(.bold))
+                    Text("Question \(questionCounter) / \(numberOfQuestions)")
+                        .foregroundStyle(.secondary)
+                        .font(.headline.weight(.bold))
+                } //: VSTACK
                 
                 Spacer()
             } //: VSTACK
@@ -114,11 +145,10 @@ struct ContentView: View {
                 scoreTitle = "Wrong! That's the flag of \(countries[number])!"
             }
             
-            score -= 1
-            
+            hp -= 1
         }
         
-        if numberOfQuestions == 3 {
+        if questionCounter == numberOfQuestions || hp == 0 {
             finalScoreTitle = "Your final result:"
             showingFinalScore = true
         } else {
@@ -130,11 +160,11 @@ struct ContentView: View {
         countries.remove(at: correctAnswer)
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
-        numberOfQuestions += 1
+        questionCounter += 1
     }
     
     func resetGame() {
-        numberOfQuestions = 1
+        questionCounter = 1
         score = 0
         countries = ContentView.allCountries
     }
